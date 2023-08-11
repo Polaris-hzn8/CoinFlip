@@ -12,6 +12,7 @@
 #include <QPixmap>
 #include <QIcon>
 #include <QDebug>
+#include <QTimer>
 
 MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene) {
     ui->setupUi(this);
@@ -27,11 +28,18 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     //创建并设置开始按钮
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
     startBtn->move(this->width()*0.5 - startBtn->width()*0.5, this->height()*0.6);
+    //点击开始按钮跳转至 关卡选择窗口
+    levelScene = new LevelScene();
     //为开始按钮添加点击效果
     connect(startBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "player started the game.";
         startBtn->sink();//按钮向下
         startBtn->jump();//按钮向上
+        //利用QTimer定时器延迟1秒进入levelScene场景
+        QTimer::singleShot(500, this, [=](){
+            this->hide();
+            levelScene->show();
+        });
     });
 }
 

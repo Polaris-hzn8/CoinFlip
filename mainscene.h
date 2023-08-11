@@ -8,6 +8,7 @@
 #ifndef MAINSCENE_H
 #define MAINSCENE_H
 
+#include "levelscene.h"
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -22,6 +23,7 @@ public:
     void paintEvent(QPaintEvent *event);//绘制背景图片
 private:
     Ui::MainScene *ui;
+    LevelScene *levelScene = nullptr;
 };
 
 #endif // MAINSCENE_H

@@ -1,3 +1,10 @@
+/*************************************************************************
+    > File Name: mypushbutton.cpp
+    > Author: luochenhao
+    > Mail: 3453851623@qq.com
+    > Created Time: 2023-08-11 17:26:13
+************************************************************************/
+
 #include "mypushbutton.h"
 #include <QPixmap>
 #include <QDebug>
@@ -39,7 +46,7 @@ void MyPushButton::sink() {
 
 void MyPushButton::jump() {
     QPropertyAnimation *jump = new QPropertyAnimation(this, "geometry");
-    jump->setDuration(800);
+    jump->setDuration(300);
     jump->setStartValue(QRect(this->x(), this->y() + 6, this->width(), this->height()));
     jump->setEndValue(QRect(this->x(), this->y(), this->width(), this->height()));
     jump->setEasingCurve(QEasingCurve::OutBounce);
