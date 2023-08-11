@@ -16,11 +16,14 @@ class MyPushButton : public QPushButton {
     Q_OBJECT
 public:
     //explicit MyPushButton(QWidget *parent = nullptr);
-    MyPushButton(QWidget *parent = nullptr, QString normalImag = "", QString pressImg = "");
-    QString normalImgPath;
-    QString pressImgPath;
+    MyPushButton(QWidget *parent = nullptr, QString normalImg = "", QString pressImg = "");
     void sink();
     void jump();
+    //重写按钮的按下与释放事件
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+    QString _normalImgPath;
+    QString _pressImgPath;
 signals:
 public slots:
 };

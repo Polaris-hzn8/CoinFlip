@@ -14,9 +14,8 @@ class LevelScene : public QMainWindow {
     Q_OBJECT
 public:
     explicit LevelScene(QWidget *parent = nullptr);
-
+    void paintEvent(QPaintEvent *event);//绘制背景图片
 signals:
-
 public slots:
 };
 
