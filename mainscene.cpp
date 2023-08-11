@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QIcon>
+#include <QDebug>
 
 MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene) {
     ui->setupUi(this);
@@ -18,13 +19,20 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     connect(ui->actionquit, &QAction::triggered, this, [=](){
         this->close();
     });
-    //配置主场景
+    //主场景窗口设置
     setFixedSize(400, 700);
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     setWindowTitle("CoinFlip");
+
     //创建并设置开始按钮
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
     startBtn->move(this->width()*0.5 - startBtn->width()*0.5, this->height()*0.6);
+    //为开始按钮添加点击效果
+    connect(startBtn, &MyPushButton::clicked, this, [=](){
+        qDebug() << "player started the game.";
+        startBtn->sink();//按钮向下
+        startBtn->jump();//按钮向上
+    });
 }
 
 //绘制主场景背景图片

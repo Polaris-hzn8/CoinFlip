@@ -12,6 +12,8 @@ public:
     MyPushButton(QWidget *parent = nullptr, QString normalImag = "", QString pressImg = "");
     QString normalImgPath;
     QString pressImgPath;
+    void sink();
+    void jump();
 signals:
 public slots:
 };
