@@ -12,9 +12,12 @@
 #include <QAction>
 #include <QPainter>
 #include <QDebug>
+#include <QTimer>
+#include <QString>
+#include <QLabel>
 
 LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
-    //设置level窗口基本参数
+    //1.设置level窗口基本参数
     setFixedSize(400, 700);
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     setWindowTitle("CoinFlip-levelchoose");
@@ -22,11 +25,11 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
     setMenuBar(mbar);
     QMenu *startMenu = mbar->addMenu("start");
     QAction *quitAction = startMenu->addAction("quit");
-    //quit按钮功能实现
+    //2.quit按钮功能实现
     connect(quitAction, &QAction::triggered, this, [=](){
         this->close();
     });
-    //加载返回按钮
+    //3.加载返回按钮
     QString normalImagePath = ":/res/img/BackButton.png";
     QString pressImagePath = ":/res/img/BackButtonSelected.png";
     MyPushButton *backBtn = new MyPushButton(this, normalImagePath, pressImagePath);
@@ -34,7 +37,30 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
     //back按钮功能实现
     connect(backBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "debug: player choosed to return to the start page.";
+        QTimer::singleShot(200, this, [=](){
+            emit this->levelSceneClose();//向mainsecene发送信息
+        });
     });
+    //4.加载关卡选择按钮
+    for (int i = 0; i < 20; ++i) {
+        //关卡图片
+        MyPushButton *levelBtn = new MyPushButton(this, ":/res/img/LevelIcon.png");
+        levelBtn->move(60 + i%4 * 70, 200 + i/4 * 70);
+        //关卡数字
+        QLabel *label = new QLabel(this);
+        label->setFixedSize(levelBtn->width(), levelBtn->height());
+        label->setText(QString::number(1 + i));
+        label->move(60 + i%4 * 70, 200 + i/4 * 70);
+        label->setAlignment(Qt::AlignCenter);//label中的数字居中
+        label->setAttribute(Qt::WA_TransparentForMouseEvents);//鼠标点击穿过label标签
+        //监听每个level按钮的点击事件
+        connect(levelBtn, &QPushButton::clicked, this, [=](){
+            levelBtn->sink();
+            levelBtn->jump();
+            QString str = QString("debug: player choosed level %1.").arg(i + 1);
+            qDebug() << str;
+        });
+    }
 }
 
 //绘制背景图片

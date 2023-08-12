@@ -16,6 +16,8 @@ public:
     explicit LevelScene(QWidget *parent = nullptr);
     void paintEvent(QPaintEvent *event);//绘制背景图片
 signals:
+    //自定义信号 用于通知向mainscene通知levelsecen的关闭
+    void levelSceneClose();
 public slots:
 };
 

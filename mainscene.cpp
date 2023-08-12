@@ -16,7 +16,7 @@
 
 MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene) {
     ui->setupUi(this);
-    //主界面退出
+    //关闭主界面
     connect(ui->actionquit, &QAction::triggered, this, [=](){
         this->close();
     });
@@ -28,9 +28,8 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     //加载开始按钮
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
     startBtn->move(this->width()*0.5 - startBtn->width()*0.5, this->height()*0.6);
-    //点击开始按钮跳转至 关卡选择窗口
+    //为开始按钮添加点击效果 并实现相应功能
     levelScene = new LevelScene();
-    //为开始按钮添加点击效果
     connect(startBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "debug: player started the game.";
         startBtn->sink();//按钮向下
@@ -40,6 +39,12 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
             this->hide();
             levelScene->show();
         });
+    });
+
+    //开始监听来自levelscene的信号
+    connect(levelScene, &LevelScene::levelSceneClose, this, [=](){
+        levelScene->close();
+        this->show();
     });
 }
 
