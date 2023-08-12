@@ -15,7 +15,10 @@ class GameScene : public QMainWindow {
 public:
     //explicit GameScene(QWidget *parent = nullptr);
     GameScene(int levelNum);
+    void paintEvent(QPaintEvent *event);
 signals:
+    //自定义信号 用于通知向levelscene通知gamescene的关闭
+    void gameSceneClose();
 public slots:
 private:
     int _levelNum;

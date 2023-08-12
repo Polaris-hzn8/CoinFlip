@@ -53,17 +53,25 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
         label->move(60 + i%4 * 70, 200 + i/4 * 70);
         label->setAlignment(Qt::AlignCenter);//label中的数字居中
         label->setAttribute(Qt::WA_TransparentForMouseEvents);//鼠标点击穿过label标签
-        //监听每个level按钮的点击事件 准备场景跳转
+        //5.监听每个level按钮的点击事件 准备场景跳转
         connect(levelBtn, &QPushButton::clicked, this, [=](){
             QString str = QString("debug: player choosed level %1.").arg(i + 1);
             qDebug() << str;
             levelBtn->sink();
             levelBtn->jump();
             if (_gamescene == nullptr) {
-                this->hide();
+                //游戏场景的创建需要放到触发函数中
                 _gamescene = new GameScene(i + 1);
+                this->hide();
                 _gamescene->show();
             }
+            //6.开始监听来自gamescene的信号
+            connect(_gamescene, &GameScene::gameSceneClose, this, [=](){
+                qDebug() << "debug: receive signal form _gamescene.";
+                this->show();
+                delete _gamescene;
+                _gamescene = nullptr;
+            });
         });
     }
 }

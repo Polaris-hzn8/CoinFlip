@@ -13,10 +13,11 @@
 #include <QIcon>
 #include <QDebug>
 #include <QTimer>
+#include <QTimer>
 
 MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene) {
     ui->setupUi(this);
-    //关闭主界面
+    //1.关闭主界面
     connect(ui->actionquit, &QAction::triggered, this, [=](){
         this->close();
     });
@@ -25,7 +26,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     setWindowTitle("CoinFlip");
 
-    //加载开始按钮
+    //2.加载开始按钮
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
     startBtn->move(this->width()*0.5 - startBtn->width()*0.5, this->height()*0.6);
     //为开始按钮添加点击效果 并实现相应功能
@@ -41,7 +42,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
         });
     });
 
-    //开始监听来自levelscene的信号
+    //3.开始监听来自levelscene的信号
     connect(_levelScene, &LevelScene::levelSceneClose, this, [=](){
         _levelScene->close();
         this->show();
