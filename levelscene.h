@@ -8,6 +8,7 @@
 #ifndef LEVELSCENE_H
 #define LEVELSCENE_H
 
+#include "gamescene.h"
 #include <QMainWindow>
 
 class LevelScene : public QMainWindow {
@@ -19,6 +20,8 @@ signals:
     //自定义信号 用于通知向mainscene通知levelsecen的关闭
     void levelSceneClose();
 public slots:
+private:
+    GameScene *_gamescene = nullptr;
 };
 
 #endif // LEVELSCENE_H

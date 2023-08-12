@@ -53,12 +53,17 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
         label->move(60 + i%4 * 70, 200 + i/4 * 70);
         label->setAlignment(Qt::AlignCenter);//label中的数字居中
         label->setAttribute(Qt::WA_TransparentForMouseEvents);//鼠标点击穿过label标签
-        //监听每个level按钮的点击事件
+        //监听每个level按钮的点击事件 准备场景跳转
         connect(levelBtn, &QPushButton::clicked, this, [=](){
-            levelBtn->sink();
-            levelBtn->jump();
             QString str = QString("debug: player choosed level %1.").arg(i + 1);
             qDebug() << str;
+            levelBtn->sink();
+            levelBtn->jump();
+            if (_gamescene == nullptr) {
+                this->hide();
+                _gamescene = new GameScene(i + 1);
+                _gamescene->show();
+            }
         });
     }
 }

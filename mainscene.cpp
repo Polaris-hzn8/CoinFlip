@@ -29,7 +29,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
     startBtn->move(this->width()*0.5 - startBtn->width()*0.5, this->height()*0.6);
     //为开始按钮添加点击效果 并实现相应功能
-    levelScene = new LevelScene();
+    _levelScene = new LevelScene();
     connect(startBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "debug: player started the game.";
         startBtn->sink();//按钮向下
@@ -37,13 +37,13 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
         //利用QTimer定时器延迟1秒进入levelScene场景
         QTimer::singleShot(100, this, [=](){
             this->hide();
-            levelScene->show();
+            _levelScene->show();
         });
     });
 
     //开始监听来自levelscene的信号
-    connect(levelScene, &LevelScene::levelSceneClose, this, [=](){
-        levelScene->close();
+    connect(_levelScene, &LevelScene::levelSceneClose, this, [=](){
+        _levelScene->close();
         this->show();
     });
 }
@@ -64,7 +64,6 @@ void MainScene::paintEvent(QPaintEvent *event) {
 
 MainScene::~MainScene() {
     delete ui;
-    delete levelScene;
 }
 
 
