@@ -9,6 +9,7 @@
 #define GAMESCENE_H
 
 #include "coin.h"
+#include <QLabel>
 #include <QMainWindow>
 
 class GameScene : public QMainWindow {
@@ -22,7 +23,7 @@ public:
     void updateData(Coin *coin);
     bool check();//检查关卡是否通关
     void disabled();//禁用所有的金币
-    void popSucessAlert();//弹出通关提示
+    void popSucessAlert(QLabel *endLabel);//弹出通关提示
 signals:
     //自定义信号 用于通知向levelscene通知gamescene的关闭
     void gameSceneClose();

@@ -18,6 +18,7 @@
 #include <QPalette>
 #include <QTimer>
 
+#include <QPropertyAnimation>
 #include <iostream>
 using namespace std;
 
@@ -33,6 +34,13 @@ GameScene::GameScene(int levelNum) {
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     QString title = QString("CoinFlip-level-%1").arg(levelNum);
     setWindowTitle(title);
+    //加载游戏结束弹窗
+    QLabel *endLabel = new QLabel(this);
+    QPixmap pixmap;
+    pixmap.load(":/res/img/LevelCompletedDialogBg.png");
+    endLabel->setGeometry(0, 0, pixmap.width(), pixmap.height());
+    endLabel->setPixmap(pixmap);
+    endLabel->move((this->width() - pixmap.width())*0.5, -pixmap.height());
     //显示当前关卡信息
     QLabel *label = new QLabel(this);
     QFont font;
@@ -105,7 +113,7 @@ GameScene::GameScene(int levelNum) {
                     if (check()) {
                         qDebug() << "debug: congratulation! level is complete.";
                         disabled();//禁用所有的金币点击
-                        popSucessAlert();
+                        popSucessAlert(endLabel);
                     } else {
                         qDebug() << "debug: sorry, please give it another try.";
                     }
@@ -196,10 +204,23 @@ bool GameScene::check() {
     return _isComplete;
 }
 
+//禁用所有的金币点击事件
 void GameScene::disabled() {
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 4; ++j)
             _coins[i + 1][j + 1]->_isDisabled = true;
+}
+
+//弹出通关提示窗口
+void GameScene::popSucessAlert(QLabel *endLabel) {
+    //动画效果
+    QPropertyAnimation *animation = new QPropertyAnimation(endLabel, "geometry");
+    animation->setDuration(1000);
+    animation->setStartValue(QRect(endLabel->x(), endLabel->y(), endLabel->width(), endLabel->height()));
+    animation->setEndValue(QRect(endLabel->x(), endLabel->y() + 170, endLabel->width(), endLabel->height()));
+    animation->setEasingCurve(QEasingCurve::OutBounce);
+    animation->start();
+    qDebug() << "debug: sucess altertion is poped. ";
 }
 
 //绘制背景图片
