@@ -17,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     coin.cpp \
+    dataconfig.cpp \
     gamescene.cpp \
     levelscene.cpp \
     main.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     coin.h \
+    dataconfig.h \
     gamescene.h \
     levelscene.h \
     mainscene.h \

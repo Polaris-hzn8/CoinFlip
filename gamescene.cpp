@@ -8,6 +8,7 @@
 #include "gamescene.h"
 #include "mypushbutton.h"
 #include "coin.h"
+#include "dataconfig.h"
 #include <QDebug>
 #include <QLabel>
 #include <QMenuBar>
@@ -57,16 +58,30 @@ GameScene::GameScene(int levelNum) {
         });
     });
     //4.加载核心游戏内容
-    //4-1.加载金币的背景
+    //4.1加载关卡数据
+    DataConfig dataconfig;
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
+            _levelData[i][j] = dataconfig.mData[_levelNum][i][j];
+        }
+    }
+    //4.2根据载入的关卡数据加载金币
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            //（1）加载金币的背景
             QPixmap pixmap = QPixmap(":/res/img/BoardNode.png").scaledToWidth(60);
             QLabel *label = new QLabel(this);
             label->setGeometry(0, 0, pixmap.width(), pixmap.height());
             label->setPixmap(pixmap);
             label->move(75 + i*60, 200 + j*60);
-            //4-2.在每个金币的背景中创建金币
-            Coin *coin = new Coin(this, ":/res/img/Coin0001.png");
+            //（2）在每个金币的背景中创建金币
+            QString coinPath;
+            if (_levelData[i][j]) {
+                coinPath = ":/res/img/Coin0001.png";
+            } else {
+                coinPath = ":/res/img/Coin0008.png";
+            }
+            Coin *coin = new Coin(this, coinPath);
             coin->move(75 + i*60 + pixmap.width()*0.1, 200 + j*60 + pixmap.height()*0.1);
         }
     }

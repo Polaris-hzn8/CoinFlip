@@ -21,7 +21,8 @@ signals:
     void gameSceneClose();
 public slots:
 private:
-    int _levelNum;
+    int _levelNum;//关卡id
+    int _levelData[4][4];//关卡数据
 };
 
 #endif // GAMESCENE_H
