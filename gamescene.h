@@ -20,7 +20,9 @@ public:
     void crossFlip(Coin *coin);
     void XCrossFlip(Coin *coin);
     void updateData(Coin *coin);
-    bool check();
+    bool check();//检查关卡是否通关
+    void disabled();//禁用所有的金币
+    void popSucessAlert();//弹出通关提示
 signals:
     //自定义信号 用于通知向levelscene通知gamescene的关闭
     void gameSceneClose();

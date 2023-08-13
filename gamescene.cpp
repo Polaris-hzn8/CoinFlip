@@ -94,22 +94,22 @@ GameScene::GameScene(int levelNum) {
             _coins[i + 1][j + 1] = coin;
             //5.3监听金币的点击事件 点击金币触发金币翻转（自定义金币翻转规则 crossFlip 十字反转）
             connect(coin, &Coin::clicked, this, [=](){
-                if (!coin->_isFlipping) {
-                    //（1）玩家所点击的金币翻转
-                    coin->flip();
-                    updateData(coin);
-                    //（2）点击带动造成其他的金币翻转 翻转延时60ms
-                    QTimer::singleShot(60, this, [=](){
-                        crossFlip(coin);
-                        //XCrossFlip(coin);
-                        //（3）检测游戏是否胜利/结束
-                        if (check()) {
-                            qDebug() << "debug: congratulation! level is complete.";
-                        } else {
-                            qDebug() << "debug: sorry, please give it another try.";
-                        }
-                    });
-                }
+                //（1）玩家所点击的金币翻转
+                coin->flip();
+                updateData(coin);
+                //（2）点击带动造成其他的金币翻转 翻转延时60ms
+                QTimer::singleShot(60, this, [=](){
+                    crossFlip(coin);
+                    //XCrossFlip(coin);
+                    //（3）检测游戏是否胜利/结束
+                    if (check()) {
+                        qDebug() << "debug: congratulation! level is complete.";
+                        disabled();//禁用所有的金币点击
+                        popSucessAlert();
+                    } else {
+                        qDebug() << "debug: sorry, please give it another try.";
+                    }
+                });
             });
         }
     }
@@ -194,6 +194,12 @@ bool GameScene::check() {
                 qDebug() << str;
             }
     return _isComplete;
+}
+
+void GameScene::disabled() {
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            _coins[i + 1][j + 1]->_isDisabled = true;
 }
 
 //绘制背景图片

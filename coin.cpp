@@ -63,6 +63,11 @@ Coin::Coin(int posx, int posy, bool flag, QString img, QWidget *parent) {
     });
 }
 
+void Coin::mousePressEvent(QMouseEvent *e) {
+    if (_isFlipping || _isDisabled) return;
+    QPushButton::mousePressEvent(e);
+}
+
 void Coin::flip() {
     _isFlipping = true;
     if (_isFront) {
