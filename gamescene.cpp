@@ -7,6 +7,7 @@
 
 #include "gamescene.h"
 #include "mypushbutton.h"
+#include "coin.h"
 #include <QDebug>
 #include <QLabel>
 #include <QMenuBar>
@@ -56,6 +57,19 @@ GameScene::GameScene(int levelNum) {
         });
     });
     //4.加载核心游戏内容
+    //4-1.加载金币的背景
+    for (int i = 0; i < 4; ++i) {
+        for (int j = 0; j < 4; ++j) {
+            QPixmap pixmap = QPixmap(":/res/img/BoardNode.png").scaledToWidth(60);
+            QLabel *label = new QLabel(this);
+            label->setGeometry(0, 0, pixmap.width(), pixmap.height());
+            label->setPixmap(pixmap);
+            label->move(75 + i*60, 200 + j*60);
+            //4-2.在每个金币的背景中创建金币
+            Coin *coin = new Coin(this, ":/res/img/Coin0001.png");
+            coin->move(75 + i*60 + pixmap.width()*0.1, 200 + j*60 + pixmap.height()*0.1);
+        }
+    }
 }
 
 //绘制背景图片
