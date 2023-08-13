@@ -16,7 +16,17 @@ class Coin : public QPushButton {
     Q_OBJECT
 public:
     //explicit Coin(QWidget *parent = nullptr);
-    Coin(QWidget *parent = nullptr, QString img = "");
+    Coin(int posx, int posy, bool flag, QString img = "", QWidget *parent = nullptr);
+    void changeFlag();
+    int _posx;
+    int _posy;
+    bool _flag;
+private:
+    //用于实现金币翻转的参数
+    QTimer *_frontTimer;//正面反转定时器
+    QTimer *_backTimer;//反面反转定时器
+    int _min = 1;
+    int _max = 8;
 signals:
 public slots:
 };

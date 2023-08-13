@@ -76,13 +76,19 @@ GameScene::GameScene(int levelNum) {
             label->move(75 + i*60, 200 + j*60);
             //（2）在每个金币的背景中创建金币
             QString coinPath;
-            if (_levelData[i][j]) {
+            int flag = _levelData[i][j];
+            if (flag) {
                 coinPath = ":/res/img/Coin0001.png";
             } else {
                 coinPath = ":/res/img/Coin0008.png";
             }
-            Coin *coin = new Coin(this, coinPath);
+            Coin *coin = new Coin(i, j, flag, coinPath, this);
             coin->move(75 + i*60 + pixmap.width()*0.1, 200 + j*60 + pixmap.height()*0.1);
+
+            //4.3监听金币的点击事件 点击金币触发金币翻转
+            connect(coin, &Coin::clicked, this, [=](){
+                coin->changeFlag();
+            });
         }
     }
 }
@@ -99,3 +105,5 @@ void GameScene::paintEvent(QPaintEvent *event) {
     dec1.load(":/res/img/Title.png");
     painter.drawPixmap(20, 50, dec1);
 }
+
+
