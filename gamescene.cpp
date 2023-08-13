@@ -18,6 +18,9 @@
 #include <QPalette>
 #include <QTimer>
 
+#include <iostream>
+using namespace std;
+
 //GameScene::GameScene(QWidget *parent) : QMainWindow(parent) {}
 
 GameScene::GameScene(int levelNum) {
@@ -99,11 +102,18 @@ GameScene::GameScene(int levelNum) {
                     QTimer::singleShot(60, this, [=](){
                         crossFlip(coin);
                         //XCrossFlip(coin);
+                        //（3）检测游戏是否胜利/结束
+                        if (check()) {
+                            qDebug() << "debug: congratulation! level is complete.";
+                        } else {
+                            qDebug() << "debug: sorry, please give it another try.";
+                        }
                     });
                 }
             });
         }
     }
+    check();//加载场景后的初次检测
 }
 
 //其余金币按照十字翻转规则翻转 利用扩大1格范围的数组处理边界问题
@@ -111,8 +121,8 @@ void GameScene::crossFlip(Coin *coin) {
     int x = coin->_posx + 1;
     int y = coin->_posy + 1;
     //1.定义的翻转规则
-    Coin* down = _coins[x][y - 1];
     Coin* up = _coins[x][y + 1];
+    Coin* down = _coins[x][y - 1];
     Coin* left = _coins[x - 1][y];
     Coin* right = _coins[x + 1][y];
     //2.翻转并更新二维数组数据
@@ -169,7 +179,21 @@ void GameScene::XCrossFlip(Coin *coin) {
 void GameScene::updateData(Coin *coin) {
     int x = coin->_posx;
     int y = coin->_posy;
-    _levelData[x][y] = _levelData[x][y] ? 0 : 1;
+    _levelData[x][y] = _levelData[x][y] == 1 ? 0 : 1;
+}
+
+bool GameScene::check() {
+    _isComplete = true;
+    qDebug() << "debug: start checking...";
+    for (int i = 0; i < 4; ++i)
+        for (int j = 0; j < 4; ++j)
+            if (!_coins[i + 1][j + 1]->_isFront) {
+            //if (!_levelData[i][j]) {
+                _isComplete = false;
+                QString str = QString("The coins at positions(%1, %2) have not been flipped to the front side yet.").arg(i).arg(j);
+                qDebug() << str;
+            }
+    return _isComplete;
 }
 
 //绘制背景图片
@@ -184,3 +208,4 @@ void GameScene::paintEvent(QPaintEvent *event) {
     dec1.load(":/res/img/Title.png");
     painter.drawPixmap(20, 50, dec1);
 }
+

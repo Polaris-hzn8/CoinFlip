@@ -20,6 +20,7 @@ public:
     void crossFlip(Coin *coin);
     void XCrossFlip(Coin *coin);
     void updateData(Coin *coin);
+    bool check();
 signals:
     //自定义信号 用于通知向levelscene通知gamescene的关闭
     void gameSceneClose();
@@ -28,6 +29,7 @@ private:
     int _levelNum;//关卡id
     int _levelData[4][4];//关卡数据
     Coin* _coins[6][6];//金币对象指针数组
+    bool _isComplete;
 };
 
 #endif // GAMESCENE_H

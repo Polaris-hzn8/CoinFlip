@@ -16,7 +16,7 @@ class Coin : public QPushButton {
     Q_OBJECT
 public:
     //explicit Coin(QWidget *parent = nullptr);
-    Coin(int posx, int posy, bool isFront, QString img = "", QWidget *parent = nullptr);
+    Coin(int posx, int posy, bool flag, QString img = "", QWidget *parent = nullptr);
     void flip();
     int _posx;
     int _posy;

@@ -12,12 +12,12 @@
 
 //Coin::Coin(QWidget *parent) : QPushButton(parent) {}
 
-Coin::Coin(int posx, int posy, bool isFront, QString img, QWidget *parent) {
+Coin::Coin(int posx, int posy, bool flag, QString img, QWidget *parent) {
     //1.初始化金币的成员变量
     setParent(parent);
     _posx = posx;
     _posy = posy;
-    _isFront = isFront;
+    _isFront = flag;
     _frontTimer = new QTimer(this);
     _backTimer = new QTimer(this);
     QPixmap pixmap;
