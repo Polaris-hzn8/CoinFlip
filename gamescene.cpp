@@ -16,13 +16,16 @@
 #include <QTimer>
 #include <QColor>
 #include <QPalette>
+#include <QTimer>
 
 //GameScene::GameScene(QWidget *parent) : QMainWindow(parent) {}
 
 GameScene::GameScene(int levelNum) {
     qDebug() << "debug: player entered level " << levelNum;
+    //1.初始化类成员属性
     _levelNum = levelNum;
-    //1.加载游戏窗口
+    for (int i = 0; i < 36; ++i) _coins[i%6][i/6] = nullptr;
+    //2.加载游戏窗口
     setFixedSize(400, 700);
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     QString title = QString("CoinFlip-level-%1").arg(levelNum);
@@ -37,7 +40,7 @@ GameScene::GameScene(int levelNum) {
     QString dec = QString("level-%1").arg(levelNum);
     label->setText(dec);
     label->setGeometry(50, this->height()-80, 120, 50);
-    //2.quit按钮功能实现
+    //3.quit按钮功能实现
     QMenuBar *mbar = menuBar();
     setMenuBar(mbar);
     QMenu *startMenu = mbar->addMenu("start");
@@ -45,7 +48,7 @@ GameScene::GameScene(int levelNum) {
     connect(quitAction, &QAction::triggered, this, [=](){
         this->close();
     });
-    //3.加载返回按钮
+    //4.加载返回按钮
     QString normalImagePath = ":/res/img/BackButton.png";
     QString pressImagePath = ":/res/img/BackButtonSelected.png";
     MyPushButton *backBtn = new MyPushButton(this, normalImagePath, pressImagePath);
@@ -57,15 +60,15 @@ GameScene::GameScene(int levelNum) {
             emit this->gameSceneClose();//向levelscene发送信息
         });
     });
-    //4.加载核心游戏内容
-    //4.1加载关卡数据
+    //5.加载核心游戏内容
+    //5.1加载关卡数据
     DataConfig dataconfig;
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             _levelData[i][j] = dataconfig.mData[_levelNum][i][j];
         }
     }
-    //4.2根据载入的关卡数据加载金币
+    //5.2根据载入的关卡数据加载金币
     for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
             //（1）加载金币的背景
@@ -84,16 +87,89 @@ GameScene::GameScene(int levelNum) {
             }
             Coin *coin = new Coin(i, j, flag, coinPath, this);
             coin->move(75 + i*60 + pixmap.width()*0.1, 200 + j*60 + pixmap.height()*0.1);
-
-            //4.3监听金币的点击事件 点击金币触发金币翻转
+            //（3）将创建的金币对象存入二维数组中 以便于后期维护
+            _coins[i + 1][j + 1] = coin;
+            //5.3监听金币的点击事件 点击金币触发金币翻转（自定义金币翻转规则 crossFlip 十字反转）
             connect(coin, &Coin::clicked, this, [=](){
                 if (!coin->_isFlipping) {
-                    coin->flip();//执行翻转动画
-                    _levelData[i][j] = _levelData[i][j] ? 0 : 1;//金币被点击后需要二维数组数据
+                    //（1）玩家所点击的金币翻转
+                    coin->flip();
+                    updateData(coin);
+                    //（2）点击带动造成其他的金币翻转 翻转延时60ms
+                    QTimer::singleShot(60, this, [=](){
+                        crossFlip(coin);
+                        //XCrossFlip(coin);
+                    });
                 }
             });
         }
     }
+}
+
+//其余金币按照十字翻转规则翻转 利用扩大1格范围的数组处理边界问题
+void GameScene::crossFlip(Coin *coin) {
+    int x = coin->_posx + 1;
+    int y = coin->_posy + 1;
+    //1.定义的翻转规则
+    Coin* down = _coins[x][y - 1];
+    Coin* up = _coins[x][y + 1];
+    Coin* left = _coins[x - 1][y];
+    Coin* right = _coins[x + 1][y];
+    //2.翻转并更新二维数组数据
+    if (up) {
+        up->flip();
+        updateData(up);
+    }
+    if (down) {
+        down->flip();
+        updateData(down);
+    }
+    if (left) {
+        left->flip();
+        updateData(left);
+    }
+    if (right) {
+        right->flip();
+        updateData(right);
+    }
+}
+
+//其余金币按照叉形翻转规则翻转
+void GameScene::XCrossFlip(Coin *coin) {
+    int x = coin->_posx + 1;
+    int y = coin->_posy + 1;
+    //1.定义的翻转规则
+    Coin* coin1 = _coins[x + 1][y + 1];
+    Coin* coin2 = _coins[x + 1][y - 1];
+    Coin* coin3 = _coins[x - 1][y - 1];
+    Coin* coin4 = _coins[x - 1][y + 1];
+    //2.翻转并更新二维数组数据
+    if (coin != nullptr) {
+        coin->flip();
+        updateData(coin);
+    }
+    if (coin1 != nullptr) {
+        coin1->flip();
+        updateData(coin1);
+    }
+    if (coin2 != nullptr) {
+        coin2->flip();
+        updateData(coin2);
+    }
+    if (coin3 != nullptr) {
+        coin3->flip();
+        updateData(coin3);
+    }
+    if (coin4 != nullptr) {
+        coin4->flip();
+        updateData(coin4);
+    }
+}
+
+void GameScene::updateData(Coin *coin) {
+    int x = coin->_posx;
+    int y = coin->_posy;
+    _levelData[x][y] = _levelData[x][y] ? 0 : 1;
 }
 
 //绘制背景图片
@@ -108,5 +184,3 @@ void GameScene::paintEvent(QPaintEvent *event) {
     dec1.load(":/res/img/Title.png");
     painter.drawPixmap(20, 50, dec1);
 }
-
-
