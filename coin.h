@@ -16,11 +16,12 @@ class Coin : public QPushButton {
     Q_OBJECT
 public:
     //explicit Coin(QWidget *parent = nullptr);
-    Coin(int posx, int posy, bool flag, QString img = "", QWidget *parent = nullptr);
-    void changeFlag();
+    Coin(int posx, int posy, bool isFront, QString img = "", QWidget *parent = nullptr);
+    void flip();
     int _posx;
     int _posy;
-    bool _flag;
+    bool _isFront;
+    bool _isFlipping = false;
 private:
     //用于实现金币翻转的参数
     QTimer *_frontTimer;//正面反转定时器

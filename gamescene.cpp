@@ -87,7 +87,10 @@ GameScene::GameScene(int levelNum) {
 
             //4.3监听金币的点击事件 点击金币触发金币翻转
             connect(coin, &Coin::clicked, this, [=](){
-                coin->changeFlag();
+                if (!coin->_isFlipping) {
+                    coin->flip();//执行翻转动画
+                    _levelData[i][j] = _levelData[i][j] ? 0 : 1;//金币被点击后需要二维数组数据
+                }
             });
         }
     }

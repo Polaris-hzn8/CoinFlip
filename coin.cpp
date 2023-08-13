@@ -12,12 +12,12 @@
 
 //Coin::Coin(QWidget *parent) : QPushButton(parent) {}
 
-Coin::Coin(int posx, int posy, bool flag, QString img, QWidget *parent) {
+Coin::Coin(int posx, int posy, bool isFront, QString img, QWidget *parent) {
     //1.初始化金币的成员变量
     setParent(parent);
     _posx = posx;
     _posy = posy;
-    _flag = flag;
+    _isFront = isFront;
     _frontTimer = new QTimer(this);
     _backTimer = new QTimer(this);
     QPixmap pixmap;
@@ -43,6 +43,7 @@ Coin::Coin(int posx, int posy, bool flag, QString img, QWidget *parent) {
         if (_min > _max) {
             _min = 1;
             _frontTimer->stop();
+            _isFlipping = false;
         }
     });
     connect(_backTimer, &QTimer::timeout, this, [=](){
@@ -57,17 +58,19 @@ Coin::Coin(int posx, int posy, bool flag, QString img, QWidget *parent) {
         if (_min > _max) {
             _max = 8;
             _backTimer->stop();
+            _isFlipping = false;
         }
     });
 }
 
-void Coin::changeFlag() {
-    if (_flag) {
+void Coin::flip() {
+    _isFlipping = true;
+    if (_isFront) {
         _frontTimer->start(30);//每30ms触发一次定时事件
-        _flag = false;
+        _isFront = false;
     } else {
         _backTimer->start(30);//每30ms触发一次定时事件
-        _flag = true;
+        _isFront = true;
     }
 }
 
