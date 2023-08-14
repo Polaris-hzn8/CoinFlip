@@ -12,6 +12,7 @@
 #include <QString>
 #include <QPushButton>
 #include <QMouseEvent>
+#include <QSound>
 
 class Coin : public QPushButton {
     Q_OBJECT

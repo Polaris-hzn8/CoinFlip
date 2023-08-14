@@ -14,17 +14,31 @@
 #include <QDebug>
 #include <QTimer>
 #include <QTimer>
+#include <QSound>//多媒体模块下的音效头文件
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+
+QMediaPlayer* MainScene::_musicPlayer = nullptr;
 
 MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene) {
     ui->setupUi(this);
-    //1.关闭主界面
+    //关闭主界面
     connect(ui->actionquit, &QAction::triggered, this, [=](){
         this->close();
     });
-    //主场景窗口设置
+    //1.加载主场景 背景与音效资源
     setFixedSize(400, 700);
     setWindowIcon(QIcon(":/res/img/Coin0001.png"));
     setWindowTitle("CoinFlip");
+    QSound *clickSound = new QSound(":/res/music/tap.wav", this);
+
+    //使用QMediaPlayer循环播放音乐的setLoopCount方法似乎有版本兼容问题
+    _musicPlayer = new QMediaPlayer(this);
+    _musicPlayer->setMedia(QUrl("qrc:/res/music/bgm2.mp3"));
+    _musicPlayer->play();
+    connect(_musicPlayer, &QMediaPlayer::stateChanged, this ,[=](QMediaPlayer::State playerState){
+        if (playerState == QMediaPlayer::StoppedState) _musicPlayer->play();
+    });
 
     //2.加载开始按钮
     MyPushButton *startBtn = new MyPushButton(this, ":/res/img/MenuSceneStartButton.png", "");
@@ -35,6 +49,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
         qDebug() << "debug: player started the game.";
         startBtn->sink();//按钮向下
         startBtn->jump();//按钮向上
+        clickSound->play();
         //利用QTimer定时器延迟1秒进入levelScene场景
         QTimer::singleShot(100, this, [=](){
             this->hide();

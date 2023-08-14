@@ -19,9 +19,10 @@
         <file>res/img/PlayLevelSceneBg.png</file>
         <file>res/img/Title.png</file>
         <file>res/music/back.wav</file>
-        <file>res/music/bgm.wav</file>
         <file>res/music/finish.wav</file>
         <file>res/music/flipsound.wav</file>
         <file>res/music/tap.wav</file>
+        <file>res/music/bgm1.wav</file>
+        <file>res/music/bgm2.mp3</file>
     </qresource>
 </RCC>

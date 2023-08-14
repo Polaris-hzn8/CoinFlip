@@ -6,6 +6,7 @@
 ************************************************************************/
 
 #include "levelscene.h"
+#include "mainscene.h"
 #include "mypushbutton.h"
 #include <QMenuBar>
 #include <QMenu>
@@ -15,6 +16,7 @@
 #include <QTimer>
 #include <QString>
 #include <QLabel>
+#include <QSound>
 
 LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
     //1.设置level窗口基本参数
@@ -25,6 +27,10 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
     setMenuBar(mbar);
     QMenu *startMenu = mbar->addMenu("start");
     QAction *quitAction = startMenu->addAction("quit");
+    //加载音效资源
+    QSound *clickSound = new QSound(":/res/music/tap.wav", this);
+    QSound *backSound = new QSound(":/res/music/back.wav", this);
+
     //2.quit按钮功能实现
     connect(quitAction, &QAction::triggered, this, [=](){
         this->close();
@@ -37,6 +43,7 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
     //back按钮功能实现
     connect(backBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "debug: player choosed to return to the start page.";
+        backSound->play();
         QTimer::singleShot(200, this, [=](){
             emit this->levelSceneClose();//向mainsecene发送信息
         });
@@ -59,6 +66,8 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
             qDebug() << str;
             levelBtn->sink();
             levelBtn->jump();
+            clickSound->play();
+            MainScene::_musicPlayer->pause();
             if (_gamescene == nullptr) {
                 //游戏场景的创建需要放到触发函数中
                 _gamescene = new GameScene(i + 1);

@@ -5,10 +5,11 @@
     > Created Time: 2023-08-12 10:12:38
 ************************************************************************/
 
-#include "gamescene.h"
-#include "mypushbutton.h"
 #include "coin.h"
+#include "mypushbutton.h"
 #include "dataconfig.h"
+#include "gamescene.h"
+#include "mainscene.h"
 #include <QDebug>
 #include <QLabel>
 #include <QMenuBar>
@@ -17,10 +18,8 @@
 #include <QColor>
 #include <QPalette>
 #include <QTimer>
-
 #include <QPropertyAnimation>
-#include <iostream>
-using namespace std;
+#include <QSound>
 
 //GameScene::GameScene(QWidget *parent) : QMainWindow(parent) {}
 
@@ -50,7 +49,12 @@ GameScene::GameScene(int levelNum) {
     label->setFont(font);
     QString dec = QString("level-%1").arg(levelNum);
     label->setText(dec);
-    label->setGeometry(50, this->height()-80, 120, 50);
+    label->setGeometry(50, this->height()-80, 140, 80);
+    //加载音效资源
+    QSound *flipSound = new QSound(":/res/music/flipsound.wav", this);
+    QSound *backSound = new QSound(":/res/music/back.wav", this);
+    QSound *completeSound = new QSound(":/res/music/finish.wav", this);
+
     //3.quit按钮功能实现
     QMenuBar *mbar = menuBar();
     setMenuBar(mbar);
@@ -67,6 +71,8 @@ GameScene::GameScene(int levelNum) {
     //back按钮功能实现
     connect(backBtn, &MyPushButton::clicked, this, [=](){
         qDebug() << "debug: player choosed to return to the level page.";
+        backSound->play();
+        MainScene::_musicPlayer->play();
         QTimer::singleShot(200, this, [=](){
             emit this->gameSceneClose();//向levelscene发送信息
         });
@@ -102,9 +108,10 @@ GameScene::GameScene(int levelNum) {
             _coins[i + 1][j + 1] = coin;
             //5.3监听金币的点击事件 点击金币触发金币翻转（自定义金币翻转规则 crossFlip 十字反转）
             connect(coin, &Coin::clicked, this, [=](){
-                //（1）玩家所点击的金币翻转
+                //（1）玩家所点击的金币翻转 并播放翻转音效
                 coin->flip();
                 updateData(coin);
+                flipSound->play();
                 //（2）点击带动造成其他的金币翻转 翻转延时60ms
                 QTimer::singleShot(60, this, [=](){
                     crossFlip(coin);
@@ -113,6 +120,7 @@ GameScene::GameScene(int levelNum) {
                     if (check()) {
                         qDebug() << "debug: congratulation! level is complete.";
                         disabled();//禁用所有的金币点击
+                        completeSound->play();
                         popSucessAlert(endLabel);
                     } else {
                         qDebug() << "debug: sorry, please give it another try.";

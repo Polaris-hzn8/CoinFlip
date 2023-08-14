@@ -10,6 +10,7 @@
 
 #include "levelscene.h"
 #include <QMainWindow>
+#include <QMediaPlayer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainScene; }
@@ -21,6 +22,7 @@ public:
     MainScene(QWidget *parent = nullptr);
     ~MainScene();
     void paintEvent(QPaintEvent *event);//绘制背景图片
+    static QMediaPlayer *_musicPlayer;//主题音乐
 private:
     Ui::MainScene *ui;
     LevelScene *_levelScene = nullptr;
