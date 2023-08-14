@@ -2,9 +2,11 @@
 
 ---
 
-CoinFlip是一款经典的益智类游戏，游戏中设置了20个关卡供玩家选择。
+CoinFlip is a classic puzzle game that offers players a selection of 20 levels to choose from.
 
-如果想要赢取胜利，需要点击选中特定的区域翻动其及上下左右的金币，玩家需要将金币都翻成金色才视为胜利。
+To achieve victory, players need to click on specific areas to flip the coins in that region as well as the coins above, below, left, and right of it. Players must flip all the coins to gold color to be considered victorious.
+
+This project provides a complete documentation and Git commit history, making it even more convenient for reference and quick review.
 
 
 
