@@ -71,12 +71,14 @@ LevelScene::LevelScene(QWidget *parent):QMainWindow(parent) {
             if (_gamescene == nullptr) {
                 //游戏场景的创建需要放到触发函数中
                 _gamescene = new GameScene(i + 1);
+                _gamescene->setGeometry(this->geometry());
                 this->hide();
                 _gamescene->show();
             }
             //6.开始监听来自gamescene的信号
             connect(_gamescene, &GameScene::gameSceneClose, this, [=](){
                 qDebug() << "debug: receive signal form _gamescene.";
+                this->setGeometry(_gamescene->geometry());
                 this->show();
                 delete _gamescene;
                 _gamescene = nullptr;

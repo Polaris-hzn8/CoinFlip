@@ -53,6 +53,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
         //利用QTimer定时器延迟1秒进入levelScene场景
         QTimer::singleShot(100, this, [=](){
             this->hide();
+            _levelScene->setGeometry(this->geometry());
             _levelScene->show();
         });
     });
@@ -60,6 +61,7 @@ MainScene::MainScene(QWidget *parent):QMainWindow(parent), ui(new Ui::MainScene)
     //3.开始监听来自levelscene的信号
     connect(_levelScene, &LevelScene::levelSceneClose, this, [=](){
         _levelScene->close();
+        this->setGeometry(_levelScene->geometry());
         this->show();
     });
 }
